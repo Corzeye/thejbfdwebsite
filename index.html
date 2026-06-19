@@ -1,197 +1,269 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>JBFD</title>
+<meta charset="UTF-8">
+<title>JBFD</title>
 
-    <style>
-        body{
-            margin:0;
-            font-family:Inter,system-ui,sans-serif;
-            background:#f5f7fa;
-        }
+<style>
+body{
+    margin:0;
+    font-family:Inter,system-ui,sans-serif;
+    background:#f5f7fa;
+}
 
-        .topbar{
-            height:64px;
-            background:white;
-            border-bottom:1px solid #e5e7eb;
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            padding:0 24px;
-        }
+/* blur layer when cookie popup is active */
+#blurLayer{
+    position:fixed;
+    inset:0;
+    backdrop-filter: blur(20px);
+    background: rgba(0,0,0,0.35);
+    z-index: 10;
+    display:none;
+}
 
-        .logo{
-            font-weight:700;
-            font-size:22px;
-        }
+/* TOP BAR */
+.topbar{
+    height:64px;
+    background:white;
+    border-bottom:1px solid #e5e7eb;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 24px;
+}
 
-        .search{
-            width:400px;
-            max-width:40vw;
-            background:#eef2f7;
-            border-radius:999px;
-            padding:12px 18px;
-            color:#777;
-        }
+.logo{ font-weight:700; font-size:22px; }
 
-        .layout{
-            max-width:1400px;
-            margin:auto;
-            display:grid;
-            grid-template-columns:220px 1fr 250px;
-            gap:24px;
-            padding:24px;
-        }
+.search{
+    width:400px;
+    max-width:40vw;
+    background:#eef2f7;
+    border-radius:999px;
+    padding:12px 18px;
+    color:#777;
+}
 
-        .sidebar-left,
-        .sidebar-right{
-            background:white;
-            border-radius:16px;
-            padding:20px;
-            height:fit-content;
-        }
+/* LAYOUT */
+.layout{
+    max-width:1400px;
+    margin:auto;
+    display:grid;
+    grid-template-columns:220px 1fr 250px;
+    gap:24px;
+    padding:24px;
+}
 
-        .nav-item{
-            padding:12px 0;
-        }
+.sidebar-left,
+.sidebar-right{
+    background:white;
+    border-radius:16px;
+    padding:20px;
+    height:fit-content;
+}
 
-        .feed{
-            display:flex;
-            flex-direction:column;
-            gap:20px;
-        }
+.nav-item{ padding:12px 0; }
 
-        .post{
-            background:white;
-            border-radius:16px;
-            padding:20px;
-            box-shadow:0 2px 12px rgba(0,0,0,.05);
-        }
+.feed{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+}
 
-        .post-header{
-            display:flex;
-            gap:12px;
-            align-items:center;
-            margin-bottom:16px;
-        }
+/* POSTS */
+.post{
+    background:white;
+    border-radius:16px;
+    padding:20px;
+    box-shadow:0 2px 12px rgba(0,0,0,.05);
+}
 
-        .avatar{
-            width:48px;
-            height:48px;
-            border-radius:50%;
-            background:#cbd5e1;
-        }
+.post-header{
+    display:flex;
+    gap:12px;
+    align-items:center;
+    margin-bottom:16px;
+}
 
-        .username{
-            font-weight:600;
-        }
+.avatar{
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    background:#cbd5e1;
+}
 
-        .time{
-            color:#777;
-            font-size:13px;
-        }
+.username{ font-weight:600; }
 
-        .post-text{
-            line-height:1.6;
-            margin-bottom:16px;
-        }
+.time{
+    color:#777;
+    font-size:13px;
+}
 
-        .post-image{
-            height:280px;
-            border-radius:12px;
-            background:linear-gradient(135deg,#3b82f6,#60a5fa);
-            margin-bottom:16px;
-        }
+.post-text{
+    line-height:1.6;
+    margin-bottom:16px;
+}
 
-        .actions{
-            color:#666;
-        }
+/* removed blue box completely */
+.post-image{
+    display:none;
+}
 
-        #cookieOverlay{
-            backdrop-filter:blur(3px);
-        }
-    </style>
+.actions{
+    color:#666;
+}
+
+/* COOKIE POPUP */
+#cookieOverlay{
+    position:fixed;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index: 20;
+}
+
+.cookieBox{
+    width:360px;
+    background:white;
+    border-radius:16px;
+    padding:24px;
+    box-shadow:0 20px 60px rgba(0,0,0,.25);
+    text-align:center;
+}
+
+.cookieBox button{
+    margin-top:16px;
+    padding:10px 16px;
+    border:none;
+    border-radius:10px;
+    background:#111;
+    color:white;
+    cursor:pointer;
+}
+
+/* VIDEO SCREEN */
+#videoContainer{
+    display:none;
+    height:100vh;
+    width:100%;
+    background:black;
+    color:white;
+    align-items:center;
+    justify-content:center;
+    font-size:24px;
+}
+</style>
 
 </head>
 
 <body>
 
+<div id="blurLayer"></div>
+
+<!-- COOKIE POPUP -->
+<div id="cookieOverlay">
+    <div class="cookieBox">
+        <h2>We use cookies</h2>
+        <p>
+            This site uses cookies to enhance your experience.
+            By continuing, you agree to our terms and data usage.
+        </p>
+        <button onclick="acceptCookies()">Accept & Continue</button>
+    </div>
+</div>
+
+<!-- SITE -->
 <div id="site">
 
-    <header class="topbar">
-        <div class="logo">JBFD</div>
-        <div class="search">Search posts...</div>
-        <div class="top-icons">🔔 ✉️ 👤</div>
-    </header>
+<header class="topbar">
+    <div class="logo">JBFD</div>
+    <div class="search">Search posts...</div>
+    <div class="top-icons">🔔 ✉️ 👤</div>
+</header>
 
-    <div class="layout">
+<div class="layout">
 
-        <aside class="sidebar-left">
-            <div class="nav-item">🏠 Home</div>
-            <div class="nav-item">🔥 Popular</div>
-            <div class="nav-item">👥 Following</div>
-            <div class="nav-item">🕒 Recent</div>
-            <div class="nav-item">⭐ Saved</div>
-        </aside>
+    <aside class="sidebar-left">
+        <div class="nav-item">🏠 Home</div>
+        <div class="nav-item">🔥 Popular</div>
+        <div class="nav-item">👥 Following</div>
+        <div class="nav-item">🕒 Recent</div>
+        <div class="nav-item">⭐ Saved</div>
+    </aside>
 
-        <main class="feed">
+    <main class="feed">
 
-            <div class="post">
-                <div class="post-header">
-                    <div class="avatar"></div>
-                    <div>
-                        <div class="username">@PixelNomad</div>
-                        <div class="time">2 hours ago</div>
-                    </div>
-                </div>
-
-                <div class="post-text">
-                    Finally got the lighting setup finished.
-                    Took way longer than expected but it was worth it.
-                </div>
-
-                <div class="post-image"></div>
-
-                <div class="actions">
-                    ❤️ 34 &nbsp;&nbsp; 💬 12 &nbsp;&nbsp; ↗ 4
+        <div class="post">
+            <div class="post-header">
+                <div class="avatar"></div>
+                <div>
+                    <div class="username">@PixelNomad</div>
+                    <div class="time">2 hours ago</div>
                 </div>
             </div>
 
-            <div class="post">
-                <div class="post-header">
-                    <div class="avatar"></div>
-                    <div>
-                        <div class="username">@MangoTree</div>
-                        <div class="time">6 hours ago</div>
-                    </div>
-                </div>
+            <div class="post-text">
+                Finally got the lighting setup finished. Took way longer than expected but it was worth it. 
+                I had to completely rewire everything, reposition the LEDs three times, and recalibrate the camera exposure so it wouldn’t blow out highlights. 
+                The final result is way smoother than anything I’ve done before and honestly feels like a huge upgrade compared to my old setup. 
+                Next step is probably adding some motion effects and syncing it with audio.
+            </div>
 
-                <div class="post-text">
-                    Anyone else still playing this game in 2026?
-                </div>
+            <div class="actions">
+                ❤️ 34 &nbsp;&nbsp; 💬 12 &nbsp;&nbsp; ↗ 4
+            </div>
+        </div>
 
-                <div class="actions">
-                    ❤️ 118 &nbsp;&nbsp; 💬 47 &nbsp;&nbsp; ↗ 8
+        <div class="post">
+            <div class="post-header">
+                <div class="avatar"></div>
+                <div>
+                    <div class="username">@MangoTree</div>
+                    <div class="time">6 hours ago</div>
                 </div>
             </div>
 
-        </main>
+            <div class="post-text">
+                Anyone else still playing this game in 2026? I swear it somehow got better with age. 
+                The community is still active, updates are still rolling out, and somehow the meta keeps shifting in ways I didn’t expect. 
+                I thought it would be dead by now but it’s honestly still one of the most fun games to just hop into for a few hours and chill.
+            </div>
 
-        <aside class="sidebar-right">
-            <div class="trending-title">Trending</div>
-            <div>#gaming</div>
-            <div>#travel</div>
-            <div>#tech</div>
-            <div>#photography</div>
-        </aside>
+            <div class="actions">
+                ❤️ 118 &nbsp;&nbsp; 💬 47 &nbsp;&nbsp; ↗ 8
+            </div>
+        </div>
 
-    </div>
+    </main>
+
+    <aside class="sidebar-right">
+        <div class="trending-title">Trending</div>
+        <div>#gaming</div>
+        <div>#travel</div>
+        <div>#tech</div>
+        <div>#photography</div>
+    </aside>
 
 </div>
 
-<div id="cookieOverlay">...</div>
-<div id="videoContainer">...</div>
+</div>
+
+<!-- VIDEO SCREEN -->
+<div id="videoContainer">
+    🎥 Video page (placeholder)
+</div>
+
+<script>
+function acceptCookies(){
+    document.getElementById("cookieOverlay").style.display = "none";
+    document.getElementById("blurLayer").style.display = "none";
+    document.getElementById("site").style.display = "none";
+    document.getElementById("videoContainer").style.display = "flex";
+}
+
+/* activate blur immediately */
+document.getElementById("blurLayer").style.display = "block";
+</script>
 
 </body>
 </html>
