@@ -8,20 +8,24 @@
 body{
     margin:0;
     font-family:Inter,system-ui,sans-serif;
-    background:#f5f7fa;
+    background:#0b1220;
 }
 
-/* blur layer when cookie popup is active */
+/* STRONG BLUR BACKDROP */
 #blurLayer{
     position:fixed;
     inset:0;
-    backdrop-filter: blur(20px);
-    background: rgba(0,0,0,0.35);
+    backdrop-filter: blur(25px);
+    background: rgba(0,0,0,0.55);
     z-index: 10;
-    display:none;
 }
 
-/* TOP BAR */
+/* SITE */
+#site{
+    display:block;
+}
+
+/* TOPBAR */
 .topbar{
     height:64px;
     background:white;
@@ -32,7 +36,10 @@ body{
     padding:0 24px;
 }
 
-.logo{ font-weight:700; font-size:22px; }
+.logo{
+    font-weight:700;
+    font-size:22px;
+}
 
 .search{
     width:400px;
@@ -69,7 +76,6 @@ body{
     gap:20px;
 }
 
-/* POSTS */
 .post{
     background:white;
     border-radius:16px;
@@ -103,16 +109,11 @@ body{
     margin-bottom:16px;
 }
 
-/* removed blue box completely */
-.post-image{
-    display:none;
-}
-
 .actions{
     color:#666;
 }
 
-/* COOKIE POPUP */
+/* COOKIE POPUP (BLUE MODERN STYLE) */
 #cookieOverlay{
     position:fixed;
     inset:0;
@@ -123,34 +124,64 @@ body{
 }
 
 .cookieBox{
-    width:360px;
-    background:white;
-    border-radius:16px;
-    padding:24px;
-    box-shadow:0 20px 60px rgba(0,0,0,.25);
-    text-align:center;
+    width:380px;
+    background: linear-gradient(135deg,#1d4ed8,#3b82f6);
+    color:white;
+    border-radius:18px;
+    padding:26px;
+    box-shadow:0 25px 80px rgba(0,0,0,.5);
+    text-align:left;
+}
+
+.cookieBox h2{
+    margin:0 0 10px 0;
+}
+
+.cookieBox p{
+    font-size:14px;
+    opacity:0.9;
+    line-height:1.5;
+}
+
+.btnRow{
+    display:flex;
+    gap:10px;
+    margin-top:18px;
 }
 
 .cookieBox button{
-    margin-top:16px;
-    padding:10px 16px;
+    flex:1;
+    padding:10px 14px;
     border:none;
     border-radius:10px;
-    background:#111;
-    color:white;
     cursor:pointer;
+    font-weight:600;
 }
 
-/* VIDEO SCREEN */
+.accept{
+    background:white;
+    color:#1d4ed8;
+}
+
+.decline{
+    background:rgba(255,255,255,0.2);
+    color:white;
+    border:1px solid rgba(255,255,255,0.4);
+}
+
+/* VIDEO FULLSCREEN */
 #videoContainer{
     display:none;
-    height:100vh;
-    width:100%;
+    position:fixed;
+    inset:0;
     background:black;
-    color:white;
-    align-items:center;
-    justify-content:center;
-    font-size:24px;
+    z-index:5;
+}
+
+#videoContainer video{
+    width:100%;
+    height:100%;
+    object-fit:cover; /* THIS makes it fill edges */
 }
 </style>
 
@@ -163,12 +194,16 @@ body{
 <!-- COOKIE POPUP -->
 <div id="cookieOverlay">
     <div class="cookieBox">
-        <h2>We use cookies</h2>
+        <h2>Cookie Settings</h2>
         <p>
-            This site uses cookies to enhance your experience.
-            By continuing, you agree to our terms and data usage.
+            We use cookies to improve performance, personalize content, and analyze traffic.
+            You can accept or manage your preferences.
         </p>
-        <button onclick="acceptCookies()">Accept & Continue</button>
+
+        <div class="btnRow">
+            <button class="decline" onclick="startVideo()">Manage</button>
+            <button class="accept" onclick="startVideo()">Accept</button>
+        </div>
     </div>
 </div>
 
@@ -203,35 +238,13 @@ body{
             </div>
 
             <div class="post-text">
-                Finally got the lighting setup finished. Took way longer than expected but it was worth it. 
-                I had to completely rewire everything, reposition the LEDs three times, and recalibrate the camera exposure so it wouldn’t blow out highlights. 
-                The final result is way smoother than anything I’ve done before and honestly feels like a huge upgrade compared to my old setup. 
-                Next step is probably adding some motion effects and syncing it with audio.
+                Finally got the lighting setup finished. It took multiple redesigns, rewiring everything,
+                and rebalancing exposure across all angles. I also had to adjust color temperature manually
+                because the automatic settings kept blowing out highlights. Now it finally looks cinematic
+                and stable enough for real recording work.
             </div>
 
-            <div class="actions">
-                ❤️ 34 &nbsp;&nbsp; 💬 12 &nbsp;&nbsp; ↗ 4
-            </div>
-        </div>
-
-        <div class="post">
-            <div class="post-header">
-                <div class="avatar"></div>
-                <div>
-                    <div class="username">@MangoTree</div>
-                    <div class="time">6 hours ago</div>
-                </div>
-            </div>
-
-            <div class="post-text">
-                Anyone else still playing this game in 2026? I swear it somehow got better with age. 
-                The community is still active, updates are still rolling out, and somehow the meta keeps shifting in ways I didn’t expect. 
-                I thought it would be dead by now but it’s honestly still one of the most fun games to just hop into for a few hours and chill.
-            </div>
-
-            <div class="actions">
-                ❤️ 118 &nbsp;&nbsp; 💬 47 &nbsp;&nbsp; ↗ 8
-            </div>
+            <div class="actions">❤️ 34 💬 12 ↗ 4</div>
         </div>
 
     </main>
@@ -248,20 +261,30 @@ body{
 
 </div>
 
-<!-- VIDEO SCREEN -->
+<!-- VIDEO -->
 <div id="videoContainer">
-    🎥 Video page (placeholder)
+    <video id="vid" autoplay muted playsinline>
+        <source src="getnerdalerted.mp4" type="video/mp4">
+    </video>
 </div>
 
 <script>
-function acceptCookies(){
+function startVideo(){
     document.getElementById("cookieOverlay").style.display = "none";
     document.getElementById("blurLayer").style.display = "none";
     document.getElementById("site").style.display = "none";
-    document.getElementById("videoContainer").style.display = "flex";
+
+    const videoContainer = document.getElementById("videoContainer");
+    videoContainer.style.display = "block";
+
+    const vid = document.getElementById("vid");
+
+    // try to enable audio + autoplay
+    vid.muted = false;
+    vid.play();
 }
 
-/* activate blur immediately */
+/* show blur immediately */
 document.getElementById("blurLayer").style.display = "block";
 </script>
 
