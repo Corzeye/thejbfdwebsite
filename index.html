@@ -1,343 +1,113 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<title>Community Content Update</title>
-
-<!-- Discord / Social Embed -->
-<meta property="og:title" content="Community Content Update">
-<meta property="og:description" content="Changes to content sharing, visibility controls, and account security are now available.">
-<meta property="og:type" content="article">
-<meta property="og:site_name" content="JBFD">
-<meta property="og:url" content="https://thejbfd.com/post/57349/community-content-update">
-
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
-body{
-    font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background:#f4f6f9;
-    color:#1f2937;
-    min-height:100vh;
-}
-
-/* ===== PAGE ===== */
-
-header{
-    height:72px;
-    background:white;
-    border-bottom:1px solid #e5e7eb;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:0 24px;
-}
-
-.logo{
-    font-size:22px;
-    font-weight:700;
-    letter-spacing:-0.5px;
-}
-
-.nav{
-    color:#6b7280;
-    font-size:14px;
-}
-
-main{
-    padding:40px 20px;
-}
-
-.article{
-    max-width:850px;
-    margin:auto;
-    background:white;
-    border-radius:18px;
-    overflow:hidden;
-    box-shadow:
-        0 10px 40px rgba(0,0,0,.08);
-}
-
-.hero{
-    height:280px;
-    background:
-        linear-gradient(
-            135deg,
-            #1e40af,
-            #2563eb,
-            #60a5fa
-        );
-}
-
-.content{
-    padding:40px;
-}
-
-.badge{
-    display:inline-block;
-    background:#eff6ff;
-    color:#2563eb;
-    font-size:13px;
-    font-weight:600;
-    padding:6px 12px;
-    border-radius:999px;
-    margin-bottom:18px;
-}
-
-h1{
-    font-size:38px;
-    line-height:1.1;
-    margin-bottom:12px;
-}
-
-.meta{
-    color:#6b7280;
-    font-size:14px;
-    margin-bottom:28px;
-}
-
-.content p{
-    line-height:1.7;
-    margin-bottom:18px;
-    color:#374151;
-}
-
-/* ===== COOKIE MODAL ===== */
-
-#cookieOverlay{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.55);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    padding:20px;
-    z-index:9999;
-}
-
-.cookieModal{
-    width:min(650px,95vw);
-    background:white;
-    border-radius:18px;
-    overflow:hidden;
-    box-shadow:
-        0 25px 60px rgba(0,0,0,.35);
-}
-
-.cookieTop{
-    padding:24px 28px;
-    border-bottom:1px solid #e5e7eb;
-}
-
-.cookieTop h2{
-    font-size:22px;
-}
-
-.cookieBody{
-    padding:24px 28px;
-}
-
-.cookieBody p{
-    color:#4b5563;
-    line-height:1.7;
-    margin-bottom:14px;
-}
-
-.cookieFooter{
-    padding:24px 28px;
-    display:flex;
-    gap:12px;
-    flex-wrap:wrap;
-    border-top:1px solid #e5e7eb;
-}
-
-.cookieFooter button{
-    border:none;
-    cursor:pointer;
-    padding:12px 18px;
-    border-radius:10px;
-    font-size:14px;
-    font-weight:600;
-}
-
-.accept{
-    background:#2563eb;
-    color:white;
-}
-
-.reject{
-    background:#eef2f7;
-}
-
-.manage{
-    background:white;
-    border:1px solid #d1d5db;
-}
-
-/* ===== VIDEO ===== */
-
-#videoContainer{
-    position:fixed;
-    inset:0;
-    background:black;
-    display:none;
-    justify-content:center;
-    align-items:center;
-    z-index:10000;
-}
-
-video{
-    width:min(95vw,95vh);
-    height:min(95vw,95vh);
-    object-fit:contain;
-}
-
-/* ===== MOBILE ===== */
-
-@media (max-width:700px){
-
-    h1{
-        font-size:28px;
-    }
-
-    .content{
-        padding:24px;
-    }
-
-    .cookieFooter{
-        flex-direction:column;
-    }
-
-    .cookieFooter button{
-        width:100%;
-    }
-}
-</style>
-</head>
 <body>
 
-<header>
-    <div class="logo">JBFD</div>
-    <div class="nav">Community • Discover • Share</div>
-</header>
+<!-- SITE -->
 
-<main>
-    <div class="article">
+<div id="site">
 
-        <div class="hero"></div>
+    <header class="topbar">
 
-        <div class="content">
+        <div class="logo">JBFD</div>
 
-            <div class="badge">
-                Platform Update
-            </div>
-
-            <h1>
-                Community Content Update
-            </h1>
-
-            <div class="meta">
-                Published June 18, 2026 • 4 min read
-            </div>
-
-            <p>
-                We're introducing several improvements to content sharing,
-                visibility controls, and platform reliability. These updates
-                are designed to provide a more consistent experience across
-                communities and shared posts.
-            </p>
-
-            <p>
-                Users can now manage content visibility more easily and gain
-                access to improved account security settings. Additional
-                moderation tools and reporting features are also being rolled
-                out over the coming weeks.
-            </p>
-
-            <p>
-                As part of these changes, we've updated certain privacy and
-                cookie preferences to improve service functionality and
-                analytics reporting.
-            </p>
-
+        <div class="search">
+            Search posts...
         </div>
-    </div>
-</main>
 
+        <div class="top-icons">
+            🔔 ✉️ 👤
+        </div>
+
+    </header>
+
+    <div class="layout">
+
+        <aside class="sidebar-left">
+
+            <div class="nav-item">🏠 Home</div>
+            <div class="nav-item">🔥 Popular</div>
+            <div class="nav-item">👥 Following</div>
+            <div class="nav-item">🕒 Recent</div>
+            <div class="nav-item">⭐ Saved</div>
+
+        </aside>
+
+        <main class="feed">
+
+            <div class="post">
+
+                <div class="post-header">
+
+                    <div class="avatar"></div>
+
+                    <div>
+                        <div class="username">@PixelNomad</div>
+                        <div class="time">2 hours ago</div>
+                    </div>
+
+                </div>
+
+                <div class="post-text">
+                    Finally got the lighting setup finished.
+                    Took way longer than expected but it was worth it.
+                </div>
+
+                <div class="post-image"></div>
+
+                <div class="actions">
+                    ❤️ 34 &nbsp;&nbsp; 💬 12 &nbsp;&nbsp; ↗ 4
+                </div>
+
+            </div>
+
+            <div class="post">
+
+                <div class="post-header">
+
+                    <div class="avatar"></div>
+
+                    <div>
+                        <div class="username">@MangoTree</div>
+                        <div class="time">6 hours ago</div>
+                    </div>
+
+                </div>
+
+                <div class="post-text">
+                    Anyone else still playing this game in 2026?
+                </div>
+
+                <div class="actions">
+                    ❤️ 118 &nbsp;&nbsp; 💬 47 &nbsp;&nbsp; ↗ 8
+                </div>
+
+            </div>
+
+        </main>
+
+        <aside class="sidebar-right">
+
+            <div class="trending-title">
+                Trending
+            </div>
+
+            <div>#gaming</div>
+            <div>#travel</div>
+            <div>#tech</div>
+            <div>#photography</div>
+
+        </aside>
+
+    </div>
+
+</div>
+
+<!-- COOKIE MODAL -->
 <div id="cookieOverlay">
-    <div class="cookieModal">
-
-        <div class="cookieTop">
-            <h2>Privacy & Cookie Preferences</h2>
-        </div>
-
-        <div class="cookieBody">
-
-            <p>
-                We use cookies and similar technologies to improve site
-                performance, personalize content, analyze traffic, and support
-                account security.
-            </p>
-
-            <p>
-                Following our June 2026 platform update, certain privacy
-                controls and data processing options have been revised to
-                improve reliability and service quality.
-            </p>
-
-            <p>
-                By continuing, you agree to the use of cookies as described
-                in our updated Privacy Policy.
-            </p>
-
-        </div>
-
-        <div class="cookieFooter">
-
-            <button class="accept" onclick="startVideo()">
-                Accept All
-            </button>
-
-            <button class="reject" onclick="startVideo()">
-                Reject Non-Essential
-            </button>
-
-            <button class="manage" onclick="startVideo()">
-                Manage Preferences
-            </button>
-
-        </div>
-
-    </div>
+    ...
 </div>
 
+<!-- VIDEO -->
 <div id="videoContainer">
-    <video id="video" autoplay loop playsinline>
-        <source src="getnerdalerted.mp4" type="video/mp4">
-    </video>
+    ...
 </div>
-
-<script>
-function startVideo() {
-
-    document.getElementById("cookieOverlay").style.display = "none";
-
-    const container = document.getElementById("videoContainer");
-    const video = document.getElementById("video");
-
-    container.style.display = "flex";
-
-    video.play().catch(err => {
-        console.log(err);
-    });
-}
-</script>
 
 </body>
-</html>
