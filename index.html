@@ -2,174 +2,96 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>JBFD</title>
+<title>Site</title>
 
 <style>
 body{
     margin:0;
     font-family:Inter,system-ui,sans-serif;
-    background:#0b1220;
+    background:#0f172a;
+    overflow:hidden;
 }
 
-/* STRONG BLUR BACKDROP */
+/* BACKDROP (fixes ugly blue wash) */
 #blurLayer{
     position:fixed;
     inset:0;
-    backdrop-filter: blur(25px);
-    background: rgba(0,0,0,0.55);
-    z-index: 10;
+    backdrop-filter: blur(22px);
+    background: rgba(0,0,0,0.65);
+    z-index:10;
 }
 
 /* SITE */
 #site{
-    display:block;
+    filter:none;
 }
 
-/* TOPBAR */
-.topbar{
-    height:64px;
-    background:white;
-    border-bottom:1px solid #e5e7eb;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:0 24px;
-}
-
-.logo{
-    font-weight:700;
-    font-size:22px;
-}
-
-.search{
-    width:400px;
-    max-width:40vw;
-    background:#eef2f7;
-    border-radius:999px;
-    padding:12px 18px;
-    color:#777;
-}
-
-/* LAYOUT */
-.layout{
-    max-width:1400px;
-    margin:auto;
-    display:grid;
-    grid-template-columns:220px 1fr 250px;
-    gap:24px;
-    padding:24px;
-}
-
-.sidebar-left,
-.sidebar-right{
-    background:white;
-    border-radius:16px;
-    padding:20px;
-    height:fit-content;
-}
-
-.nav-item{ padding:12px 0; }
-
-.feed{
-    display:flex;
-    flex-direction:column;
-    gap:20px;
-}
-
-.post{
-    background:white;
-    border-radius:16px;
-    padding:20px;
-    box-shadow:0 2px 12px rgba(0,0,0,.05);
-}
-
-.post-header{
-    display:flex;
-    gap:12px;
-    align-items:center;
-    margin-bottom:16px;
-}
-
-.avatar{
-    width:48px;
-    height:48px;
-    border-radius:50%;
-    background:#cbd5e1;
-}
-
-.username{ font-weight:600; }
-
-.time{
-    color:#777;
-    font-size:13px;
-}
-
-.post-text{
-    line-height:1.6;
-    margin-bottom:16px;
-}
-
-.actions{
-    color:#666;
-}
-
-/* COOKIE POPUP (BLUE MODERN STYLE) */
+/* COOKIE MODAL */
 #cookieOverlay{
     position:fixed;
     inset:0;
     display:flex;
     align-items:center;
     justify-content:center;
-    z-index: 20;
+    z-index:20;
 }
 
+/* more realistic “EU consent style” but NOT branded */
 .cookieBox{
-    width:380px;
-    background: linear-gradient(135deg,#1d4ed8,#3b82f6);
-    color:white;
-    border-radius:18px;
-    padding:26px;
-    box-shadow:0 25px 80px rgba(0,0,0,.5);
-    text-align:left;
+    width:420px;
+    background:#ffffff;
+    border-radius:14px;
+    padding:22px 22px 18px;
+    box-shadow:0 30px 80px rgba(0,0,0,.5);
 }
 
-.cookieBox h2{
-    margin:0 0 10px 0;
+.cookieTitle{
+    font-size:16px;
+    font-weight:700;
+    margin-bottom:10px;
+    color:#111827;
 }
 
-.cookieBox p{
-    font-size:14px;
-    opacity:0.9;
+.cookieText{
+    font-size:13px;
     line-height:1.5;
+    color:#4b5563;
+}
+
+.cookieLinks{
+    margin-top:10px;
+    font-size:12px;
+    color:#2563eb;
 }
 
 .btnRow{
     display:flex;
     gap:10px;
-    margin-top:18px;
+    margin-top:16px;
 }
 
-.cookieBox button{
+button{
     flex:1;
-    padding:10px 14px;
-    border:none;
+    padding:10px 12px;
     border-radius:10px;
-    cursor:pointer;
+    border:none;
     font-weight:600;
+    cursor:pointer;
 }
 
+/* primary */
 .accept{
-    background:white;
-    color:#1d4ed8;
-}
-
-.decline{
-    background:rgba(255,255,255,0.2);
+    background:#1d4ed8;
     color:white;
-    border:1px solid rgba(255,255,255,0.4);
 }
 
-/* VIDEO FULLSCREEN */
+/* secondary */
+.decline{
+    background:#e5e7eb;
+    color:#111827;
+}
+
+/* VIDEO FULLSCREEN FIX (NO STRETCHING) */
 #videoContainer{
     display:none;
     position:fixed;
@@ -181,7 +103,7 @@ body{
 #videoContainer video{
     width:100%;
     height:100%;
-    object-fit:cover; /* THIS makes it fill edges */
+    object-fit:cover; /* IMPORTANT: no distortion, fills screen */
 }
 </style>
 
@@ -191,96 +113,45 @@ body{
 
 <div id="blurLayer"></div>
 
-<!-- COOKIE POPUP -->
+<!-- COOKIE -->
 <div id="cookieOverlay">
     <div class="cookieBox">
-        <h2>Cookie Settings</h2>
-        <p>
-            We use cookies to improve performance, personalize content, and analyze traffic.
-            You can accept or manage your preferences.
-        </p>
+        <div class="cookieTitle">Cookie settings</div>
+
+        <div class="cookieText">
+            We use cookies to store preferences, improve performance and provide a better browsing experience.
+            You can accept or manage your settings.
+        </div>
+
+        <div class="cookieLinks">
+            Learn more about cookies
+        </div>
 
         <div class="btnRow">
-            <button class="decline" onclick="startVideo()">Manage</button>
-            <button class="accept" onclick="startVideo()">Accept</button>
+            <button class="decline" onclick="enterSite()">Manage cookies</button>
+            <button class="accept" onclick="enterSite()">Accept all</button>
         </div>
     </div>
 </div>
 
-<!-- SITE -->
-<div id="site">
-
-<header class="topbar">
-    <div class="logo">JBFD</div>
-    <div class="search">Search posts...</div>
-    <div class="top-icons">🔔 ✉️ 👤</div>
-</header>
-
-<div class="layout">
-
-    <aside class="sidebar-left">
-        <div class="nav-item">🏠 Home</div>
-        <div class="nav-item">🔥 Popular</div>
-        <div class="nav-item">👥 Following</div>
-        <div class="nav-item">🕒 Recent</div>
-        <div class="nav-item">⭐ Saved</div>
-    </aside>
-
-    <main class="feed">
-
-        <div class="post">
-            <div class="post-header">
-                <div class="avatar"></div>
-                <div>
-                    <div class="username">@PixelNomad</div>
-                    <div class="time">2 hours ago</div>
-                </div>
-            </div>
-
-            <div class="post-text">
-                Finally got the lighting setup finished. It took multiple redesigns, rewiring everything,
-                and rebalancing exposure across all angles. I also had to adjust color temperature manually
-                because the automatic settings kept blowing out highlights. Now it finally looks cinematic
-                and stable enough for real recording work.
-            </div>
-
-            <div class="actions">❤️ 34 💬 12 ↗ 4</div>
-        </div>
-
-    </main>
-
-    <aside class="sidebar-right">
-        <div class="trending-title">Trending</div>
-        <div>#gaming</div>
-        <div>#travel</div>
-        <div>#tech</div>
-        <div>#photography</div>
-    </aside>
-
-</div>
-
-</div>
-
 <!-- VIDEO -->
 <div id="videoContainer">
-    <video id="vid" autoplay muted playsinline>
+    <video id="vid" autoplay muted playsinline loop>
         <source src="getnerdalerted.mp4" type="video/mp4">
     </video>
 </div>
 
 <script>
-function startVideo(){
+function enterSite(){
     document.getElementById("cookieOverlay").style.display = "none";
     document.getElementById("blurLayer").style.display = "none";
-    document.getElementById("site").style.display = "none";
 
-    const videoContainer = document.getElementById("videoContainer");
-    videoContainer.style.display = "block";
+    const video = document.getElementById("videoContainer");
+    video.style.display = "block";
 
     const vid = document.getElementById("vid");
 
-    // try to enable audio + autoplay
-    vid.muted = false;
+    vid.muted = false;   // try enable sound (browser may block autoplay audio)
     vid.play();
 }
 
