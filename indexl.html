@@ -1,19 +1,123 @@
 <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cookies</title>
 
-<html lang:en-US>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-	<head>
-		<title>The Joe Bartolozzi Family Diner
-		<style>
+    body {
+        overflow: hidden;
+        font-family: Arial, sans-serif;
+        background: #000;
+    }
 
-		</style>
-		
-	</head>
-	
-	<body>
-		<h1>This is the test website for  THE JBFD<h1>
-	</body>
+    #cookiePopup {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.85);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
 
+    .cookieBox {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        width: 400px;
+        max-width: 90%;
+        text-align: center;
+    }
+
+    .cookieBox h2 {
+        margin-bottom: 10px;
+    }
+
+    .cookieBox p {
+        margin-bottom: 20px;
+    }
+
+    .buttons {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    button {
+        padding: 10px 20px;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+    }
+
+    .accept {
+        background: #4CAF50;
+        color: white;
+    }
+
+    .decline {
+        background: #f44336;
+        color: white;
+    }
+
+    #videoContainer {
+        position: fixed;
+        inset: 0;
+        display: none;
+        background: black;
+    }
+
+    video {
+        width: 100vw;
+        height: 100vh;
+        object-fit: cover;
+    }
+</style>
+</head>
+<body>
+
+<div id="cookiePopup">
+    <div class="cookieBox">
+        <h2>Cookie Preferences</h2>
+        <p>
+            We use cookies to improve your experience, analyze traffic,
+            and personalize content.
+        </p>
+
+        <div class="buttons">
+            <button class="accept" onclick="startVideo()">Accept</button>
+            <button class="decline" onclick="startVideo()">Decline</button>
+        </div>
+    </div>
+</div>
+
+<div id="videoContainer">
+    <video id="video" autoplay loop playsinline>
+        <source src="getnerdalerted.mp4" type="video/mp4">
+    </video>
+</div>
+
+<script>
+function startVideo() {
+    document.getElementById("cookiePopup").style.display = "none";
+    document.getElementById("videoContainer").style.display = "block";
+
+    const video = document.getElementById("video");
+    video.muted = false;
+
+    video.play().catch(() => {
+        console.log("User interaction required for audio.");
+    });
+}
+</script>
+
+</body>
 </html>
-
-
