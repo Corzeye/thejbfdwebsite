@@ -1,163 +1,293 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Site</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SocialFeed</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-<style>
-body{
-    margin:0;
-    font-family:Inter,system-ui,sans-serif;
-    background:#0f172a;
-    overflow:hidden;
-}
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f0f2f5;
+      min-height: 100vh;
+      overflow: hidden;
+    }
 
-/* BACKDROP (fixes ugly blue wash) */
-#blurLayer{
-    position:fixed;
-    inset:0;
-    backdrop-filter: blur(22px);
-    background: rgba(0,0,0,0.65);
-    z-index:10;
-}
+    /* ── FAKE FEED (blurred backdrop) ── */
+    .feed-wrapper {
+      filter: blur(6px) brightness(0.7);
+      pointer-events: none;
+      user-select: none;
+      padding: 16px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
 
-/* SITE */
-#site{
-    filter:none;
-}
+    .navbar {
+      background: #fff;
+      border-radius: 10px;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.12);
+    }
+    .navbar .logo { font-weight: 800; font-size: 1.4rem; color: #1877f2; letter-spacing: -0.5px; }
+    .nav-icons { display: flex; gap: 12px; }
+    .nav-dot { width: 36px; height: 36px; border-radius: 50%; background: #e4e6ea; }
 
-/* COOKIE MODAL */
-#cookieOverlay{
-    position:fixed;
-    inset:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    z-index:20;
-}
+    .post {
+      background: #fff;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.10);
+    }
+    .post-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .avatar { width: 42px; height: 42px; border-radius: 50%; }
+    .post-meta .name { font-weight: 700; font-size: .95rem; color: #050505; }
+    .post-meta .time { font-size: .78rem; color: #65676b; }
+    .post-body { font-size: .93rem; color: #1c1e21; line-height: 1.5; margin-bottom: 12px; }
+    .post-img {
+      width: 100%; border-radius: 8px; aspect-ratio: 16/9;
+      object-fit: cover; display: block; margin-bottom: 10px;
+    }
+    .post-img-placeholder {
+      width: 100%; border-radius: 8px; aspect-ratio: 16/9;
+      background: linear-gradient(135deg, #c9d6e3, #a8bfd4);
+      margin-bottom: 10px;
+    }
+    .post-actions { display: flex; gap: 4px; border-top: 1px solid #e4e6ea; padding-top: 8px; }
+    .action-btn {
+      flex: 1; padding: 6px; border-radius: 6px; background: transparent;
+      border: none; font-size: .88rem; color: #65676b; font-weight: 600; cursor: pointer;
+    }
+    .reactions { font-size: .82rem; color: #65676b; margin-bottom: 6px; }
 
-/* more realistic “EU consent style” but NOT branded */
-.cookieBox{
-    width:420px;
-    background:#ffffff;
-    border-radius:14px;
-    padding:22px 22px 18px;
-    box-shadow:0 30px 80px rgba(0,0,0,.5);
-}
+    /* ── OVERLAY ── */
+    .overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.45);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 100;
+      padding: 16px;
+    }
 
-.cookieTitle{
-    font-size:16px;
-    font-weight:700;
-    margin-bottom:10px;
-    color:#111827;
-}
+    /* ── COOKIE MODAL ── */
+    .cookie-modal {
+      background: #fff;
+      border-radius: 16px;
+      padding: 28px 24px 24px;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 24px 60px rgba(0,0,0,.3);
+      animation: popIn .25s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(.88) translateY(20px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
 
-.cookieText{
-    font-size:13px;
-    line-height:1.5;
-    color:#4b5563;
-}
+    .cookie-icon { font-size: 2.4rem; margin-bottom: 10px; }
+    .cookie-modal h2 {
+      font-size: 1.25rem; font-weight: 800; color: #050505; margin-bottom: 8px;
+    }
+    .cookie-modal p {
+      font-size: .88rem; color: #444; line-height: 1.6; margin-bottom: 14px;
+    }
 
-.cookieLinks{
-    margin-top:10px;
-    font-size:12px;
-    color:#2563eb;
-}
+    .cookie-list {
+      background: #f7f8fa; border-radius: 10px;
+      padding: 12px 14px; margin-bottom: 18px;
+      font-size: .82rem; color: #555; line-height: 1.7;
+    }
+    .cookie-list li { list-style: none; padding-left: 0; }
+    .cookie-list li::before { content: "✓ "; color: #1877f2; font-weight: 700; }
 
-.btnRow{
-    display:flex;
-    gap:10px;
-    margin-top:16px;
-}
+    .btn-row {
+      display: flex; flex-direction: column; gap: 10px;
+    }
 
-button{
-    flex:1;
-    padding:10px 12px;
-    border-radius:10px;
-    border:none;
-    font-weight:600;
-    cursor:pointer;
-}
+    .btn-accept {
+      width: 100%; padding: 13px;
+      background: #1877f2; color: #fff;
+      border: none; border-radius: 10px;
+      font-size: .97rem; font-weight: 700; cursor: pointer;
+      transition: background .15s;
+    }
+    .btn-accept:hover { background: #145dbf; }
 
-/* primary */
-.accept{
-    background:#1d4ed8;
-    color:white;
-}
+    .btn-row-2 { display: flex; gap: 10px; }
 
-/* secondary */
-.decline{
-    background:#e5e7eb;
-    color:#111827;
-}
+    .btn-manage, .btn-decline {
+      flex: 1; padding: 11px;
+      background: #e4e6ea; color: #050505;
+      border: none; border-radius: 10px;
+      font-size: .88rem; font-weight: 600; cursor: pointer;
+      transition: background .15s;
+    }
+    .btn-manage:hover, .btn-decline:hover { background: #d8dadf; }
+    .btn-decline { color: #e53935; }
 
-/* VIDEO FULLSCREEN FIX (NO STRETCHING) */
-#videoContainer{
-    display:none;
-    position:fixed;
-    inset:0;
-    background:black;
-    z-index:5;
-}
+    .cookie-footer {
+      text-align: center; margin-top: 12px;
+      font-size: .75rem; color: #aaa;
+    }
 
-#videoContainer video{
-    width:100%;
-    height:100%;
-    object-fit:cover; /* IMPORTANT: no distortion, fills screen */
-}
-</style>
+    /* ── VIDEO PLAYER ── */
+    .video-overlay {
+      position: fixed; inset: 0;
+      background: #000;
+      display: none;
+      align-items: center; justify-content: center;
+      z-index: 200;
+      padding: 12px;
+    }
+    .video-overlay.active { display: flex; }
 
+    .video-container {
+      width: 100%;
+      max-width: min(90vw, calc(90vh * 16/9));
+      aspect-ratio: 16/9;
+      position: relative;
+    }
+    .video-container video {
+      width: 100%; height: 100%;
+      object-fit: contain;
+      border-radius: 10px;
+      display: block;
+    }
+  </style>
 </head>
-
 <body>
 
-<div id="blurLayer"></div>
-
-<!-- COOKIE -->
-<div id="cookieOverlay">
-    <div class="cookieBox">
-        <div class="cookieTitle">Cookie settings</div>
-
-        <div class="cookieText">
-            We use cookies to store preferences, improve performance and provide a better browsing experience.
-            You can accept or manage your settings.
-        </div>
-
-        <div class="cookieLinks">
-            Learn more about cookies
-        </div>
-
-        <div class="btnRow">
-            <button class="decline" onclick="enterSite()">Manage cookies</button>
-            <button class="accept" onclick="enterSite()">Accept all</button>
-        </div>
+  <!-- BLURRED FAKE FEED -->
+  <div class="feed-wrapper">
+    <div class="navbar">
+      <span class="logo">SocialFeed</span>
+      <div class="nav-icons">
+        <div class="nav-dot"></div>
+        <div class="nav-dot"></div>
+        <div class="nav-dot"></div>
+      </div>
     </div>
-</div>
 
-<!-- VIDEO -->
-<div id="videoContainer">
-    <video id="vid" autoplay muted playsinline loop>
-        <source src="getnerdalerted.mp4" type="video/mp4">
-    </video>
-</div>
+    <div class="post">
+      <div class="post-header">
+        <svg class="avatar" viewBox="0 0 42 42" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="21" cy="21" r="21" fill="#c9d6e3"/>
+          <circle cx="21" cy="17" r="8" fill="#a8bfd4"/>
+          <ellipse cx="21" cy="36" rx="14" ry="10" fill="#a8bfd4"/>
+        </svg>
+        <div class="post-meta">
+          <div class="name">Alex Johnson</div>
+          <div class="time">3 hrs ago · 🌍</div>
+        </div>
+      </div>
+      <div class="post-body">
+        Just got back from the most amazing trip! The views were absolutely unreal 😍 Can't believe this place actually exists. Highly recommend to anyone who loves adventure and good food! 🌄🍜 #travel #wanderlust #blessed
+      </div>
+      <div class="post-img-placeholder"></div>
+      <div class="reactions">👍 342 &nbsp;❤️ 128 &nbsp;😂 47 &nbsp;&nbsp;·&nbsp;&nbsp; 89 comments</div>
+      <div class="post-actions">
+        <button class="action-btn">👍 Like</button>
+        <button class="action-btn">💬 Comment</button>
+        <button class="action-btn">↗ Share</button>
+      </div>
+    </div>
 
-<script>
-function enterSite(){
-    document.getElementById("cookieOverlay").style.display = "none";
-    document.getElementById("blurLayer").style.display = "none";
+    <div class="post">
+      <div class="post-header">
+        <svg class="avatar" viewBox="0 0 42 42" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="21" cy="21" r="21" fill="#f4c7c3"/>
+          <circle cx="21" cy="17" r="8" fill="#e8a09a"/>
+          <ellipse cx="21" cy="36" rx="14" ry="10" fill="#e8a09a"/>
+        </svg>
+        <div class="post-meta">
+          <div class="name">Sarah M.</div>
+          <div class="time">Yesterday at 8:42 PM</div>
+        </div>
+      </div>
+      <div class="post-body">
+        Hot take: pineapple absolutely belongs on pizza and I will not be taking questions at this time 🍍🍕 Fight me in the comments.
+      </div>
+      <div class="reactions">😂 1.2K &nbsp;😡 204 &nbsp;&nbsp;·&nbsp;&nbsp; 511 comments</div>
+      <div class="post-actions">
+        <button class="action-btn">👍 Like</button>
+        <button class="action-btn">💬 Comment</button>
+        <button class="action-btn">↗ Share</button>
+      </div>
+    </div>
 
-    const video = document.getElementById("videoContainer");
-    video.style.display = "block";
+    <div class="post">
+      <div class="post-header">
+        <svg class="avatar" viewBox="0 0 42 42" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="21" cy="21" r="21" fill="#b2dfdb"/>
+          <circle cx="21" cy="17" r="8" fill="#80cbc4"/>
+          <ellipse cx="21" cy="36" rx="14" ry="10" fill="#80cbc4"/>
+        </svg>
+        <div class="post-meta">
+          <div class="name">TechBro Dan 💻</div>
+          <div class="time">2 days ago</div>
+        </div>
+      </div>
+      <div class="post-body">
+        Launched my new app today. 0 users. 0 revenue. But honestly? Vibes are immaculate. We move. 🚀
+      </div>
+      <div class="reactions">🔥 892 &nbsp;👍 341 &nbsp;&nbsp;·&nbsp;&nbsp; 223 comments</div>
+      <div class="post-actions">
+        <button class="action-btn">👍 Like</button>
+        <button class="action-btn">💬 Comment</button>
+        <button class="action-btn">↗ Share</button>
+      </div>
+    </div>
+  </div>
 
-    const vid = document.getElementById("vid");
+  <!-- COOKIE MODAL OVERLAY -->
+  <div class="overlay" id="cookieOverlay">
+    <div class="cookie-modal">
+      <div class="cookie-icon">🍪</div>
+      <h2>We value your privacy</h2>
+      <p>
+        We and our 847 trusted partners use cookies and similar tracking technologies to do a bunch of stuff that you probably won't read but we're legally required to tell you about. Blah blah blah blah. Your data, our profits, everyone wins (mostly us).
+      </p>
+      <ul class="cookie-list">
+        <li>Strictly necessary cookies (you can't say no to these, sorry)</li>
+        <li>Performance & analytics cookies (spying, basically)</li>
+        <li>Targeting & advertising cookies (more spying)</li>
+        <li>Social media cookies (you get the idea)</li>
+      </ul>
+      <div class="btn-row">
+        <button class="btn-accept" onclick="triggerVideo()">Accept All Cookies</button>
+        <div class="btn-row-2">
+          <button class="btn-manage" onclick="triggerVideo()">Manage Cookies</button>
+          <button class="btn-decline" onclick="triggerVideo()">Decline</button>
+        </div>
+      </div>
+      <div class="cookie-footer">By continuing you agree to our Terms · Privacy Policy · Cookie Policy · Random Legal Document #4</div>
+    </div>
+  </div>
 
-    vid.muted = false;   // try enable sound (browser may block autoplay audio)
-    vid.play();
-}
+  <!-- VIDEO OVERLAY -->
+  <div class="video-overlay" id="videoOverlay">
+    <div class="video-container">
+      <video id="mainVideo" controls autoplay playsinline>
+        <source src="get nerve alerted.mp4" type="video/mp4">
+        Your browser doesn't support this video format.
+      </video>
+    </div>
+  </div>
 
-/* show blur immediately */
-document.getElementById("blurLayer").style.display = "block";
-</script>
-
+  <script>
+    function triggerVideo() {
+      document.getElementById('cookieOverlay').style.display = 'none';
+      const vo = document.getElementById('videoOverlay');
+      vo.classList.add('active');
+      const vid = document.getElementById('mainVideo');
+      vid.play().catch(() => {});
+    }
+  </script>
 </body>
 </html>
